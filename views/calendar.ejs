@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/lib/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/calendar_dark.css">
+    <title>sepe - kalendarz</title>
+</head>
+<body style="overflow-x: hidden;">
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute("data-bs-theme", isDarkMode ? "dark" : "light");
+        });
+
+        var dates = <%- JSON.stringify(dates) %>
+        var projects = <%- JSON.stringify(projects) %>
+        var user = <%- JSON.stringify(user) %>
+        var vacations = <%- JSON.stringify(vacations) %>
+        var vacationDays = <%- JSON.stringify(vacationDays) %>
+
+        console.log(user);
+        console.log(projects);
+</script>
+    <div class="d-flex" style="width: 100vw;">
+      <div style="height: 100vh; min-width: 125px;" class="position-relative">
+        <nav class="navbar position-fixed flex-column align-items-center d-flex justify-content-start align-items-start flex-grow-1" style="width: 125px; height: 100vh; z-index: 999;">
+          <button value="wyloguj" class="btn btn-danger align-self-lg-center my-1 w-75" id="logout">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-power" viewBox="0 0 16 16">
+              <path d="M7.5 1v7h1V1z"/>
+              <path d="M3 8.812a5 5 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812"/>
+            </svg>
+          </button>
+  
+          
+          <img src="<%= user.avatar_url %>" class="border rounded-circle my-2" alt="User Avatar" height="64">
+          <small class="mb-2">
+            <%= user.name %> 
+            <% if (user.emoji && user.emoji[0] && user.emoji[0].emoji) { %>
+              <%= user.emoji[0].emoji %>
+            <% } %>
+          </small>
+          
+
+          <% if(isAdmin) {%>
+
+            <a href="/app/calendar/vacation" class="p-1">
+              <input type="button" value="urlopy" class="btn btn-primary">
+            </a>
+
+            <a href="/app/project" class="p-1">
+              <input type="button" value="projekty" class="btn btn-primary">
+             </a>
+             
+             <a href="/app/calendar/report" class="p-1">
+              <input type="button" value="raporty" class="btn btn-primary">
+             </a>
+
+             <a href="/app/utils/xlsx" class="p-1">
+              <input type="button" value="XLSX" class="btn btn-primary">
+             </a>
+
+             <%} %>
+          <div class="d-flex justify-content-between w-100 my-2 p-1 px-3 my-2">
+              <input type="button" value="«" class="btn btn-primary" id="calendar-back">
+              <input type="button" value="»" class="btn btn-primary" id="calendar-next">
+          </div>
+          <div class="w-100">
+            <div id="hour-counter" class="fs-6 text-center mt-2 my-2" style="width: 100%"></div>
+          </div>
+          <div class="w-100">
+            <div id="vacation-counter" class="fs-6 text-center">Wymiar urlopu:<br> <%= vacationDays[0].days %> dni</div>
+          </div>
+
+      </nav>
+
+      </div>
+
+      <div id="dp"></div>
+    </div>
+
+
+
+    <div class="modal fade" id="modalCreate" tabindex="-1" aria-labelledby="modalCreateLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="modalCreateLabel">Stwórz wydarzenie</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+          <div class="modal-body">
+            <div class="mb-3 position-relative">
+              <label for="description" class="form-label">Opis:</label>
+              <textarea class="form-control" id="create-description" data-bs-toggle="dropdown"></textarea>
+              
+              <!-- Suggestions List -->
+              <ul class="dropdown-menu" id="suggestions-list" aria-labelledby="create-description" data-bs-auto-close="outside" style="width: 100%; max-height: 200px; overflow-y: auto; overflow-x: hidden;"></ul>
+            </div>
+            <div class="mb-3">
+              <label for="date" class="form-label">Data:</label>
+              <input type="date" class="form-control" id="create-date">
+            </div>
+            <div class="mb-3">
+              <label for="time-start" class="form-label">Początek:</label>
+              <input type="time" class="form-control" id="create-time-start">
+            </div>
+            <div class="mb-3">
+              <label for="time-end" class="form-label">Koniec:</label>
+              <input type="time" class="form-control" id="create-time-end">
+            </div>
+            <div class="mb-3">
+              <label for="create-remote-work">Praca zdalna:</label>
+              <input type="checkbox" id="create-remote-work" autocomplete="off">
+            </div>
+            <div class="mb-3">
+              <label for="create-vacation">Urlop:</label>
+              <input type="checkbox" id="create-vacation" autocomplete="off">
+            </div>
+            <div id="create-project-div">
+              <label for="create-project-type">Projekt:</label>
+              <select class="form-select" id="create-project-type">
+                <% projects.forEach(function(option) { %>
+                  <% if (!option.name.trim().toUpperCase().startsWith("URLOP")) { %>
+                    <option value="<%= option.id %>"><%= option.name %></option>
+                  <% } %>
+                <% }); %>
+              </select>
+            </div>
+            <div id="create-vacation-div">
+              <label for="create-vacation">Urlop:</label>
+              <select class="form-select" id="create-vacation-type">
+                <% vacations.forEach(function(option) { %>
+                  <option value="<%= option.id %>"><%= option.name %></option>
+                <% }); %>
+              </select>
+
+              
+              <label for="date" class="form-label">Data:</label>
+              <input type="date" class="form-control" id="create-date-vacation">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+            <button type="button" class="btn btn-primary" id="create-data">Stwórz wydarzenie</button>
+          </div>
+          <div class="alert alert-danger text-center" role="alert" id="time-alert-c">
+            czas początkowy musi być wcześniej niż końcowy!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalUpdate" tabindex="-1" aria-labelledby="modalUpdateLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="modalUpdateLabel">Aktualizuj wydarzenie</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+          <div class="modal-body">
+              <div class="mb-3">
+                  <label for="description" class="form-label">Opis:</label>
+                  <textarea class="form-control" id="update-description"></textarea>
+              </div>
+            <div class="mb-3">
+              <label for="date" class="form-label">Data:</label>
+              <input type="date" class="form-control" id="update-date">
+            </div>
+            <div class="mb-3">
+              <label for="time-start" class="form-label">Początek:</label>
+              <input type="time" class="form-control" id="update-time-start">
+            </div>
+            <div class="mb-3">
+              <label for="time-end" class="form-label">Koniec:</label>
+              <input type="time" class="form-control" id="update-time-end">
+            </div>
+            <div class="mb-3">
+              <label for="update-remote-work">Praca zdalna:</label>
+              <input type="checkbox" id="update-remote-work" autocomplete="off">
+            </div>
+            <div class="mb-3">
+              <label for="create-day-off">Urlop:</label>
+              <input type="checkbox" id="update-vacation" autocomplete="off">
+            </div>
+            <div class="mb-3" id="update-project-type-div">
+              <label for="update-project-type">Projekt:</label>
+              <select class="form-select" id="update-project-type">
+                <% projects.forEach(function(option) { %>
+                  <% if (!option.name.trim().toUpperCase().startsWith("URLOP") && !option.name.trim().toUpperCase().startsWith("URLOP_POTWIERDZONY")) { %>
+                    <option value="<%= option.id %>"><%= option.name %></option>
+                  <% } %>
+                <% }); %>
+              </select>             
+            </div>
+            <div id="update-vacation-div">
+              <label for="update-vacation">Czas trwania:</label>
+              <select class="form-select" id="update-vacation-type">
+                <% vacations.forEach(function(option) { %>
+                  <option value="<%= option.id %>"><%= option.name %></option>
+                <% }); %>
+              </select>
+              <label for="date" class="form-label">Data:</label>
+              <input type="date" class="form-control" id="update-vacation-date">
+            </div>
+          </div>
+          <div class="modal-footer position-relative h-100">                        
+              <div class="w-100 d-flex justify-content-end" style="gap: 15px;">
+
+                <button type="button" class="btn btn-danger delete-btn position-absolute start-0 mx-2" id="delete-data">Usuń</button>
+                <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Zamknij</button>
+                <button type="button" class="btn btn-primary" id="update-data">Aktualizuj wydarzenie</button>              
+              </div>
+            </div>
+            <input type="number" id="update-id" style="visibility: hidden;" style="width: 1px; height:1px">
+
+            <div class="alert alert-danger text-center" role="alert" id="time-alert">
+              czas początkowy musi być wcześniej niż końcowy!
+            </div>
+            
+      </div>
+    </div>
+
+
+     <!-- <script src="/js/lib/daypilot-pro.js"></script> -->
+    <script src="/js/lib/bootstrap.bundle.min.js"></script>
+    <script src="/js/lib/daypilot-all.min.js"></script>
+    <script src="/js/calendar.js"></script>
+    <script src="/js/logout.js"></script>
+</body>
+</html>

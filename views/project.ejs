@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/lib/bootstrap.min.css">
+    <title>sepe - projekty</title>
+</head>
+<body>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute("data-bs-theme", isDarkMode ? "dark" : "light");
+        });
+
+        var projects = <%- JSON.stringify(projects) %>
+        console.log(projects);
+    </script>
+
+
+<div class="d-flex justify-content-start align-items-start flex-row" style="width: 100vw;">
+    <div style="height: 100vh; min-width: 125px;" class="position-relative">
+        <nav class="navbar position-fixed flex-column align-items-center d-flex justify-content-start align-items-start flex-grow-1" style="width: 125px; height: 100vh; z-index: 999;">
+          <button value="wyloguj" class="btn btn-danger align-self-lg-center my-1 w-75" id="logout">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-power" viewBox="0 0 16 16">
+              <path d="M7.5 1v7h1V1z"/>
+              <path d="M3 8.812a5 5 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812"/>
+            </svg>
+          </button>
+  
+          
+          <img src="<%= user.avatar_url %>" class="border rounded-circle my-2" alt="User Avatar" height="64">
+          <small class="mb-2">
+            <%= user.name %> 
+            <% if (user.emoji && user.emoji[0] && user.emoji[0].emoji) { %>
+              <%= user.emoji[0].emoji %>
+            <% } %>
+          </small>
+
+          <% if(isAdmin) {%>
+            <a href="/app/calendar/vacation" class="p-1">
+                <input type="button" value="urlopy" class="btn btn-primary">
+            </a>
+
+             <a href="/app/calendar" class="p-1">
+              <input type="button" value="kalendarz" class="btn btn-primary">
+             </a>
+
+             <a href="/app/calendar/report" class="p-1">
+                <input type="button" value="raporty" class="btn btn-primary">
+            </a>
+
+            <a href="/app/utils/xlsx" class="p-1">
+                <input type="button" value="XLSX" class="btn btn-primary">
+            </a>
+
+             <%} %>
+          <div class="p-1 my-4">
+              <button id="action-create" class="btn btn-primary">
+                dodaj <br>projekt
+              </button>
+          </div>
+
+        </nav>
+    </div>
+
+    <table class="table w-100">
+        <thead>
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">nazwa</th>
+            <th scope="col" class="text-center">kolor</th>
+            <th scope="col" class="text-center">akcje</th>
+        </thead>
+        <% projects.forEach(function(p) { %>
+            <tr>
+                <th scope="row" class="align-middle text-center"><%=p.id%></th>
+                <td class="align-middle text-center"><%=p.name%></td>
+                <td class="text-center ">
+                    <div class="colorInfo" style="width: 25px; height: 25px; margin: auto auto; transform: translateY(25%); background-color: <%=p.color%>;"></div>
+                </td>
+                <td class="align-middle text-center align-items-center">
+
+                    <button class="action-update btn btn-secondary"
+                        data-id="<%=p.id%>"
+                        data-name="<%=p.name%>"
+                        data-color="<%=p.color%>"
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                          <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                        </svg>
+                    </button>
+
+                    <button 
+                        class="action-delete btn btn-danger"
+                        data-id="<%=p.id%>"
+                        data-name="<%=p.name%>"
+                        data-color="<%=p.color%>"
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                        </svg>
+                    </button>
+                </td>
+            </tr>
+            <% }); %>
+    </table>
+
+
+  </div>
+
+
+
+    <div class="modal fade" id="modalUpdate" tabindex="-1" aria-labelledby="modalUpdateLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalUpdateLabel">Aktualizuj Projekt</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="update-name" class="form-label">Nazwa:</label>
+                        <input type="text" class="form-control" id="update-name"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update-color" class="form-label">Kolor:</label>
+                        <input type="color" class="form-control" id="update-color"></textarea>
+                    </div>
+                </div>
+
+
+                <div class="modal-footer position-relative">
+                    <input type="number" id="update-id" style="visibility: hidden;"> 
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="button" class="btn btn-primary" id="update-data">Aktualizuj Projekt</button>
+
+                </div>
+                <div class="alert alert-danger text-center" role="alert" id="update-alert">
+                    
+                </div>
+          </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDeleteLabel">Usuń Projekt</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="mb-3 text-center py-4">
+                    Czy napewno chcesz <b>USUNĄĆ</b> projekt: <b><span id="deleteName"></span></b> (id: <span id="deleteId"></span>)
+                </div>
+
+                <div class="modal-footer position-relative">
+                    <input type="number" id="delete-id" style="visibility: hidden;"> 
+                    <button type="button" class="btn btn-danger" id="delete-data">Usuń projekt</button>
+                </div>
+                <div class="alert alert-danger text-center" role="alert" id="delete-alert">
+                </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCreate" tabindex="-1" aria-labelledby="modalCreateLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCreateLabel">Utwórz Projekt</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="create-name" class="form-label">Nazwa:</label>
+                        <input type="text" class="form-control" id="create-name"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="create-color" class="form-label">Kolor:</label>
+                        <input type="color" class="form-control" id="create-color"></textarea>
+                    </div>
+                </div>
+
+
+                <div class="modal-footer position-relative">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="button" class="btn btn-primary" id="create-data">Utwórz Projekt</button>
+
+                </div>
+                <div class="alert alert-danger text-center" role="alert" id="create-alert">
+                    
+                </div>
+          </div>
+        </div>
+    </div>
+
+    <script src="/js/lib/bootstrap.bundle.min.js"></script>
+    <script src="/js/project.js"></script>
+    <script src="/js/logout.js"></script>
+
+</body>
+</html>

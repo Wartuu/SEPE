@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/css/report.css">
+    <link rel="stylesheet" href="/css/report.css" media="print">
+    <title></title>
+</head>
+<body>
+    <script>
+        var users = <%- JSON.stringify(users) %>
+        var events = <%- JSON.stringify(events) %>
+        var projects = <%- JSON.stringify(projects) %>
+        var month = <%- month %>
+        var year = <%- year %>
+
+        console.log(users);
+    </script>
+
+    <div id="report">
+    </div>
+
+
+    <script src="/js/reportPrint.js"></script>
+</body>
+</html>

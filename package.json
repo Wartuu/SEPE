@@ -1,0 +1,32 @@
+{
+  "name": "sepe-v2",
+  "version": "0.0.1",
+  "description": "sepe v2",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --trace-warnings --env-file=.env .",
+    "live": "nodemon node --env-file=.env .",
+    "migrate": "node --env-file=.env scripts/migrate.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Wartuu/SEPE"
+  },
+  "keywords": [
+    "sepe"
+  ],
+  "author": "Michal Marzec",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "mysql": "^2.18.1",
+    "node-cron": "^3.0.3",
+    "sepe-v2": "file:"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}

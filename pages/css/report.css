@@ -1,0 +1,158 @@
+@page {
+    size: landscape;
+    width: 100%;
+}
+
+@media print {
+
+    * {
+
+        -webkit-print-color-adjust:exact !important;
+        print-color-adjust:exact !important;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    .page {
+        page-break-after: always;
+        break-after: always;
+        min-width: 100%;
+    }
+    
+}
+
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('/font/Ubuntu-Regular.ttf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('/font/Ubuntu-Bold.ttf') format('truetype');
+    font-weight: bold;
+}
+
+* {
+    font-family: 'Ubuntu', sans-serif;
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+}
+
+body {
+    margin: 5px;
+}
+
+.page {
+    page-break-after: always;
+    break-after: always;
+    width: 100vw;
+}
+
+table.header-table {
+    width: 100%;
+    border-collapse: collapse; 
+    border-spacing: 0; 
+    font-weight: bold;
+}
+
+table.data-table {
+    width: 100%;
+    margin-top: 5px;
+}
+
+table.header-table {
+    font-size: 2em;
+    color: black;
+}
+
+table.data-table {
+    font-size: 12px;
+}
+
+table.data-table th {
+    text-transform: uppercase;
+}
+
+.date-cell, .date-tr {
+    width: 8%;
+}
+
+.time-tr, .time-cell {
+    width: 5%;
+}
+
+.title-cell, .name-cell, .date-cell {
+    font-size: 25px;
+    text-align: left;
+}
+
+
+.logo-cell {
+    width: 20%;
+}
+
+.logo-cell img {
+    width: 75%;
+    vertical-align: middle;
+}
+
+.minute {
+    font-size: 9px;
+    vertical-align: super;
+}
+
+.description-tr {
+    width: 70%;
+    text-align: center;
+}
+
+tr, td {
+    background-color: rgb(218, 213, 213);
+    text-align: center;
+}
+
+.footer {
+    margin-top: 5px;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+}
+
+.footer td {
+    width: 50%;
+    background-color: rgb(218, 213, 213);
+}
+
+.signature-parent {
+    margin-top: 1em;
+    width: 100%;
+    height: auto;
+
+    display: flex;
+    justify-content: center;
+}
+
+.signature {
+    margin-top: 5px;
+    font-size: 12px;
+    background-color: #FFFFFF;
+
+    color: black;
+}
+
+.signature-date {
+    display: inline;
+}
+
+.signature-info {
+    box-sizing: border-box;
+    display: inline;
+    border-top: 1px solid black;
+
+    margin: 0;
+    padding: 0;
+}
+

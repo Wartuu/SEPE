@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sepe - urlopy</title>
+    <link rel="stylesheet" href="/css/lib/bootstrap.min.css">
+</head>
+<body>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute("data-bs-theme", isDarkMode ? "dark" : "light");
+        });
+
+        const projects = <%- JSON.stringify(projects) %>
+        const vacationTypes = <%- JSON.stringify(vacationTypes) %>
+    </script>
+
+    <div class="d-flex justify-content-start align-items-start flex-row" style="width: 100vw;">
+        <div style="height: 100vh; min-width: 125px;" class="position-relative">
+            <nav class="navbar position-fixed flex-column align-items-center d-flex justify-content-start align-items-start flex-grow-1" style="width: 125px; height: 100vh; z-index: 999;">
+              <button value="wyloguj" class="btn btn-danger align-self-lg-center my-1 w-75" id="logout">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-power" viewBox="0 0 16 16">
+                  <path d="M7.5 1v7h1V1z"/>
+                  <path d="M3 8.812a5 5 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812"/>
+                </svg>
+              </button>
+      
+              
+              <img src="<%= user.avatar_url %>" class="border rounded-circle my-2" alt="User Avatar" height="64">
+              <small class="mb-2">
+                <%= user.name %> 
+                <% if (user.emoji && user.emoji[0] && user.emoji[0].emoji) { %>
+                  <%= user.emoji[0].emoji %>
+                <% } %>
+              </small>
+    
+              <% if(isAdmin) {%>
+                 <a href="/app/calendar" class="p-1">
+                  <input type="button" value="kalendarz" class="btn btn-primary">
+                 </a>
+    
+                 <a href="/app/project" class="p-1">
+                    <input type="button" value="projekty" class="btn btn-primary">
+                </a>
+
+                 <a href="/app/calendar/report" class="p-1">
+                    <input type="button" value="raporty" class="btn btn-primary">
+                </a>
+
+                <a href="/app/utils/xlsx" class="p-1">
+                    <input type="button" value="XLSX" class="btn btn-primary">
+                </a>
+                 <%} %>
+
+                 <hr class="bg-secondary border-2 border-top border-secondary w-100">
+
+                 <a href="/app/calendar/vacation-type" class="p-1">
+                    <input type="button" value="dodaj czas" class="btn btn-primary">
+                </a>
+            </nav>
+        </div>
+    
+        <table class="table w-100">
+            <thead>
+                <th scope="col" class="text-center">#</th>
+                <th scope="col" class="text-center">początek</th>
+                <th scope="col" class="text-center">koniec</th>
+                <th scope="col" class="text-center">czas trwania</th>
+                <th scope="col" class="text-center">zatwierdzenie</th>
+                <th scope="col" class="text-center">typ</th>
+                <th scope="col" class="text-center">imię i nazwisko</th>
+                <th scope="col" class="text-center">akcje</th>
+            </thead>
+            <% vacations.forEach(function(v) { %>
+                <tr id="row-<%=v.id%>">
+                    <th scope="row" class="align-middle text-center"><%= v.id %></th>
+                    <td class="align-middle text-center">
+                        <% 
+                            let eventDateStart = new Date(v.start);
+                            let dateS = eventDateStart.getFullYear() + '-' +
+                                       String(eventDateStart.getMonth() + 1).padStart(2, '0') + '-' +
+                                       String(eventDateStart.getDate()).padStart(2, '0');
+                        %>
+                        <%= dateS %>
+                    </td>
+                    <td class="align-middle text-center">
+                        <% 
+                            let eventDateEnd = new Date(v.end);
+                            let dateE = eventDateEnd.getFullYear() + '-' +
+                                       String(eventDateEnd.getMonth() + 1).padStart(2, '0') + '-' +
+                                       String(eventDateEnd.getDate()).padStart(2, '0');
+                        %>
+                        <%= dateE %>
+                    </td>
+                    <td class="align-middle text-center">
+                        <%
+                            let days = Math.floor((eventDateEnd - eventDateStart) / (1000 * 60 * 60 * 24)) + 1;
+                        %>
+
+                        <%= days %>
+
+                    </td>
+                    <td class="align-middle text-center" id="confirmation-<%=v.id%>">
+                        <%= (v.project === projects.find(project => project.name === "URLOP_POTWIERDZONY").id) ? "zatwierdzony" : "nie zatwierdzony" %>
+                    </td>
+                    <td class="align-middle text-center" id="confirmation-<%=v.id%>">
+                        <%= vacationTypes.find(t => t.id === v.vacation_type).name %>
+                    </td>
+                    <td class="align-middle text-center">
+                        <%= (users.find(user => user.id === v.user_id) || {}).name %>
+                    </td>
+                    
+                    <td class="align-middle text-center">
+                        <% if (v.project === projects.find(project => project.name === "URLOP_POTWIERDZONY").id) { %>
+                            <button class="toggle-vacation btn btn-danger"
+                                data-id="<%=v.id%>">
+                                Cofnij
+                            </button>
+                        <% } else {%> 
+                            <button class="toggle-vacation btn btn-primary"
+                                data-id="<%=v.id%>">
+
+                                Zatwierdź
+                            </button>
+                        <% }%>
+
+                        <button class="delete-vacation btn btn-danger" data-id="<%=v.id%>">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                              </svg>
+                        </button>
+                    </td>
+                    
+                </tr>
+            <% }); %>
+            
+            
+        </table>
+    
+    
+      </div>
+
+
+      <script src="/js/vacation.js"></script>
+      <script src="/js/logout.js"></script>
+</body>
+</html>

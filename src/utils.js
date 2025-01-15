@@ -210,6 +210,10 @@ async function getUserCommitsByDate(id, date) {
 }
 
 async function linkRocketChat(id, email) {
+  if (!CONFIG.CHAT_TOKEN) {
+    return false;
+  }
+
   let chatUser = await getChatUserByEmail(email);
   let existingUser = await getChatUserByGit(id);
 

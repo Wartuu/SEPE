@@ -8,12 +8,16 @@
 - APP_SECRET (GITLAB application secret)
 - APP_ID (GITLAB application id)
 - LOGIN_DOMAIN (url for gitlab app redirect, example: "http://127.0.0.1:8080/api/v1/oauth")
+- GITLAB_URL (gitlab custom url, example: "https://git.mythrium.xyz")
+- ADMIN_GROUP_ID (id of admin group in gitlab)
+- MYSQL_ADDR (example: "127.0.0.1")
+- MYSQL_USER (example: "root")
+- MYSQL_PASSWORD
+- MYSQL_DB (example "sepe")
 - CHAT_TOKEN (Rocket.chat token)
 - CHAT_USERID (Rocket.chat userid)
 - CHAT_SENDTIME (Time for sending the message, example: "15:00")
 - CHAT_WEBHOOK (Rocket.chat webhook url)
-- GITLAB_URL (gitlab custom url, example: "https://git.mythrium.xyz")
-- ADMIN_GROUP_ID (id of admin group in gitlab)
 
 ## scripts
 

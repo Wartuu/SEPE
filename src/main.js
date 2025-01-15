@@ -35,11 +35,8 @@ require('./views/login')(app);
 require('./views/xlsx')(app);
 
 if (CONFIG.CHAT_WEBHOOK) {
-  startDailyChatNotification('15:00');
+  startDailyChatNotification(CONFIG.CHAT_SENDTIME);
 }
-// app.get('/test', async (req, res) => {
-//     await dailyChatNotification();
-// })
 
 app.get('*', function (req, res) {
   res.redirect('/');

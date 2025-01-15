@@ -10,6 +10,8 @@ const CONFIG = {
   CHAT_TOKEN: process.env.CHAT_TOKEN,
   CHAT_USERID: process.env.CHAT_USERID,
   CHAT_WEBHOOK: process.env.CHAT_WEBHOOK,
+  CHAT_SENDTIME: process.env.CHAT_SENDTIME,
+
   APP_ID: process.env.APP_ID,
   LOGIN_DOMAIN: process.env.LOGIN_DOMAIN,
   PERSONAL_TOKEN: process.env.PERSONAL_TOKEN,

@@ -1,9 +1,18 @@
 const express = require('express');
-const cookieParser = require("cookie-parser");
+const cookieParser = require('cookie-parser');
 
 const { CONFIG } = require('./config');
-const { getUsers, getUserRepositories, getUserTodayCommits, getChatUsers, getChatUserByEmail } = require('./utils');
-const { startDailyChatNotification, dailyChatNotification } = require('./events');
+const {
+  getUsers,
+  getUserRepositories,
+  getUserTodayCommits,
+  getChatUsers,
+  getChatUserByEmail,
+} = require('./utils');
+const {
+  startDailyChatNotification,
+  dailyChatNotification,
+} = require('./events');
 const app = express();
 
 // express configuration
@@ -25,17 +34,17 @@ require('./views/project')(app);
 require('./views/login')(app);
 require('./views/xlsx')(app);
 
-startDailyChatNotification('15:00');
-
+if (CONFIG.CHAT_WEBHOOK) {
+  startDailyChatNotification('15:00');
+}
 // app.get('/test', async (req, res) => {
 //     await dailyChatNotification();
 // })
 
-app.get('*', function(req, res) {
-    res.redirect("/");
-})
+app.get('*', function (req, res) {
+  res.redirect('/');
+});
 
 app.listen(CONFIG.PORT, () => {
-    console.log("listening at http://127.0.0.1:" + CONFIG.PORT);
-})
-
+  console.log('listening at http://127.0.0.1:' + CONFIG.PORT);
+});

@@ -12,6 +12,7 @@
 - CHAT_USERID (Rocket.chat userid)
 - CHAT_WEBHOOK (Rocket.chat webhook url)
 - GITLAB_URL (gitlab custom url, example: "https://git.mythrium.xyz")
+- ADMIN_GROUP_ID (id of admin group in gitlab)
 
 ## scripts
 

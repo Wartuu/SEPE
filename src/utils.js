@@ -79,6 +79,8 @@ async function getUsers() {
       },
     );
     let usersJson = await users.json();
+
+    console.log(usersJson);
     if (usersJson.length != 0) {
       allUsers.push(...usersJson);
     } else {
